@@ -112,8 +112,11 @@ exports.userRequests = [
 exports.submit = [
   (req, res, next) => {
     broker
-      .sendRPCMessage(
-        { body: req.body, userId: req.userId, spaceId: req.spaceId },
+      .sendRPCMessage({
+          body: req.body,
+          userId: req.userId,
+          spaceId: req.spaceId
+        },
         "submitcontent"
       )
       .then(result => {
@@ -187,6 +190,8 @@ exports.getNewapplications = [
     if (req.query && !req.query.limit) {
       req.query.limit = 500;
     }
+    if (req.query && !req.query.sort)
+      req.query.sort = "-sys.lastUpdateTime"
     var apiRoot =
       process.env.CONTENT_DELIVERY_API || "https://app-dpanel.herokuapp.com";
     var config = {
@@ -214,20 +219,20 @@ exports.getNewapplications = [
               response.data[i].fields.partnerid &&
               response.data[i].fields.partnerid.fields
             ) {
-              var pn = response.data[i].fields.requestid.fields.phonenumber
-                ? response.data[i].fields.requestid.fields.phonenumber
-                : response.data[i].fields.requestid.fields.phoneNumber;
+              var pn = response.data[i].fields.requestid.fields.phonenumber ?
+                response.data[i].fields.requestid.fields.phonenumber :
+                response.data[i].fields.requestid.fields.phoneNumber;
               if (
                 pn &&
                 ([
-                  "+989197682386",
-                  "+989333229291",
-                  "+989125138218",
-                  "09197682386",
-                  "09333229291",
-                  "09126221987",
-                  "09125138218"
-                ].indexOf(pn) == -1 ||
+                    "+989197682386",
+                    "+989333229291",
+                    "+989125138218",
+                    "09197682386",
+                    "09333229291",
+                    "09126221987",
+                    "09125138218"
+                  ].indexOf(pn) == -1 ||
                   response.data[i].fields.partnerid.fields.isdevacc)
               ) {
                 response.data[
@@ -278,8 +283,9 @@ exports.getOpenedApplications = [
   (req, res, next) => {
     if (req.query && !req.query.limit) {
       req.query.limit = 500;
-      req.query.sort = "-sys.lastUpdateTime"
     }
+    if (req.query && !req.query.sort)
+      req.query.sort = "-sys.lastUpdateTime"
     var apiRoot =
       process.env.CONTENT_DELIVERY_API || "https://app-dpanel.herokuapp.com";
     var config = {
@@ -305,20 +311,20 @@ exports.getOpenedApplications = [
               response.data[i].fields.partnerid &&
               response.data[i].fields.partnerid.fields
             ) {
-              var pn = response.data[i].fields.requestid.fields.phonenumber
-                ? response.data[i].fields.requestid.fields.phonenumber
-                : response.data[i].fields.requestid.fields.phoneNumber;
+              var pn = response.data[i].fields.requestid.fields.phonenumber ?
+                response.data[i].fields.requestid.fields.phonenumber :
+                response.data[i].fields.requestid.fields.phoneNumber;
               if (
                 pn &&
                 ([
-                  "+989197682386",
-                  "+989333229291",
-                  "+989125138218",
-                  "09197682386",
-                  "09126221987",
-                  "09333229291",
-                  "09125138218"
-                ].indexOf(pn) == -1 ||
+                    "+989197682386",
+                    "+989333229291",
+                    "+989125138218",
+                    "09197682386",
+                    "09126221987",
+                    "09333229291",
+                    "09125138218"
+                  ].indexOf(pn) == -1 ||
                   response.data[i].fields.partnerid.fields.isdevacc)
               ) {
                 if (response.data[i].fields.requestid.status === "published")
@@ -358,8 +364,11 @@ exports.openApplication = [
   (req, res, next) => {
     req.body.id = req.params.id;
     broker
-      .sendRPCMessage(
-        { spaceId: req.spaceid, userId: req.userId, body: req.body },
+      .sendRPCMessage({
+          spaceId: req.spaceid,
+          userId: req.userId,
+          body: req.body
+        },
         "partialupdatecontent"
       )
       .then(result => {
@@ -380,9 +389,8 @@ exports.openApplication = [
             baseURL: apiRoot,
             method: "get",
             params: {
-              _id: obj.data.fields.request
-                ? obj.data.fields.request
-                : obj.data.fields.requestid
+              _id: obj.data.fields.request ?
+                obj.data.fields.request : obj.data.fields.requestid
             },
             headers: {
               authorization: req.headers.authorization,
@@ -428,8 +436,11 @@ exports.cancelApplication = [
   (req, res, next) => {
     req.body.id = req.params.id;
     broker
-      .sendRPCMessage(
-        { spaceId: req.spaceid, userId: req.userId, body: req.body },
+      .sendRPCMessage({
+          spaceId: req.spaceid,
+          userId: req.userId,
+          body: req.body
+        },
         "partialupdatecontent"
       )
       .then(result => {
@@ -450,8 +461,11 @@ exports.rejectApplication = [
   (req, res, next) => {
     req.body.id = req.params.id;
     broker
-      .sendRPCMessage(
-        { spaceId: req.spaceid, userId: req.userId, body: req.body },
+      .sendRPCMessage({
+          spaceId: req.spaceid,
+          userId: req.userId,
+          body: req.body
+        },
         "partialupdatecontent"
       )
       .then(result => {

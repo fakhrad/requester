@@ -8,8 +8,11 @@ exports.customerAccpet = [
   (req, res, next) => {
     req.body.id = req.params.id;
     broker
-      .sendRPCMessage(
-        { spaceId: req.spaceid, userId: req.userId, body: req.body },
+      .sendRPCMessage({
+          spaceId: req.spaceid,
+          userId: req.userId,
+          body: req.body
+        },
         "partialupdatecontent"
       )
       .then(result => {
@@ -30,8 +33,11 @@ exports.customerReject = [
   (req, res, next) => {
     req.body.id = req.params.id;
     broker
-      .sendRPCMessage(
-        { spaceId: req.spaceid, userId: req.userId, body: req.body },
+      .sendRPCMessage({
+          spaceId: req.spaceid,
+          userId: req.userId,
+          body: req.body
+        },
         "partialupdatecontent"
       )
       .then(result => {
@@ -57,8 +63,7 @@ exports.wonoffers = [
       baseURL: apiRoot,
       method: "get",
       params: {
-        query:
-          '{contents(contentType : "' +
+        query: '{contents(contentType : "' +
           req.params.contentType +
           '"){ fields, _id, sys{issuer issueDate} }  }'
       },
@@ -69,12 +74,12 @@ exports.wonoffers = [
     };
     console.log(config);
     axios(config)
-      .then(function(response) {
+      .then(function (response) {
         if (response.data && response.data.data && response.data.data.contents)
           res.send(response.data.data.contents);
         else res.send(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
@@ -105,6 +110,8 @@ exports.acceptedoffers = [
     if (q) {
       q["sys.issuer"] = req.userId;
     }
+    if (q && !q.sort)
+      q.sort = "-sys.lastUpdateTime"
     console.log(q);
     var apiRoot =
       process.env.CONTENT_DELIVERY_API || "https://app-dpanel.herokuapp.com";
@@ -120,10 +127,10 @@ exports.acceptedoffers = [
     };
     console.log(config);
     axios(config)
-      .then(function(response) {
+      .then(function (response) {
         res.send(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
@@ -151,6 +158,8 @@ exports.acceptedoffers = [
 exports.myoffers = [
   (req, res, next) => {
     var q = req.query || {};
+    if (q && !q.sort)
+      q.sort = "-sys.lastUpdateTime"
     console.log(q);
     var apiRoot =
       process.env.CONTENT_DELIVERY_API || "https://app-dpanel.herokuapp.com";
@@ -166,10 +175,10 @@ exports.myoffers = [
     };
     console.log(config);
     axios(config)
-      .then(function(response) {
+      .then(function (response) {
         res.send(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
@@ -200,6 +209,8 @@ exports.lostoffers = [
     if (q) {
       q["sys.issuer"] = req.userId;
     }
+    if (q && !q.sort)
+      q.sort = "-sys.lastUpdateTime"
     console.log(q);
     var apiRoot =
       process.env.CONTENT_DELIVERY_API || "https://app-dpanel.herokuapp.com";
@@ -215,10 +226,10 @@ exports.lostoffers = [
     };
     console.log(config);
     axios(config)
-      .then(function(response) {
+      .then(function (response) {
         res.send(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
@@ -245,8 +256,11 @@ exports.lostoffers = [
 exports.issueOffer = [
   (req, res, next) => {
     broker
-      .sendRPCMessage(
-        { body: req.body, userId: req.userId, spaceId: req.spaceId },
+      .sendRPCMessage({
+          body: req.body,
+          userId: req.userId,
+          spaceId: req.spaceId
+        },
         "submitcontent"
       )
       .then(result => {
@@ -266,8 +280,11 @@ exports.close = [
   (req, res, next) => {
     req.body.id = req.params.id;
     broker
-      .sendRPCMessage(
-        { spaceId: req.spaceid, userId: req.userId, body: req.body },
+      .sendRPCMessage({
+          spaceId: req.spaceid,
+          userId: req.userId,
+          body: req.body
+        },
         "partialupdatecontent"
       )
       .then(result => {
@@ -288,8 +305,11 @@ exports.cancel = [
   (req, res, next) => {
     req.body.id = req.params.id;
     broker
-      .sendRPCMessage(
-        { spaceId: req.spaceid, userId: req.userId, body: req.body },
+      .sendRPCMessage({
+          spaceId: req.spaceid,
+          userId: req.userId,
+          body: req.body
+        },
         "partialupdatecontent"
       )
       .then(result => {

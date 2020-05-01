@@ -1,8 +1,14 @@
 var axios = require("axios");
 const async = require("async");
 const broker = require("./serviceBroker");
-const { body, check, validationResult } = require("express-validator/check");
-const { sanitizeBody } = require("express-validator/filter");
+const {
+  body,
+  check,
+  validationResult
+} = require("express-validator/check");
+const {
+  sanitizeBody
+} = require("express-validator/filter");
 
 exports.myRequests = [
   // Validate fields
@@ -17,18 +23,18 @@ exports.myRequests = [
       });
       return;
     } else {
-      var contacttype = "5dc272d251b8310017540c51";
-      switch (req.spaceId.toString()) {
-        case "5d26e793375e9b001745e84d":
-          contacttype = "5dc272d251b8310017540c51";
-          break;
-        case "5cf3883dcce4de00174d48cf":
-          contacttype = "";
-          break;
-      }
+      var contacttype = "5cf3883dcce4de00174d48cf";
+      // switch (req.spaceId.toString()) {
+      //   // case "5d26e793375e9b001745e84d":
+      //   //   contacttype = "5dc272d251b8310017540c51";
+      //   //   break;
+      //   case "5cf3883dcce4de00174d48cf":
+      //     contacttype = "";
+      //     break;
+      // }
       var output = {};
       var tasks = {
-        contact: function(callback) {
+        contact: function (callback) {
           ///First, query to get existing contact
           var apiRoot =
             process.env.CONTENT_DELIVERY_API ||
@@ -49,7 +55,7 @@ exports.myRequests = [
           };
           console.log(config);
           axios(config)
-            .then(function(response) {
+            .then(function (response) {
               if (response.data && response.data.length > 0) {
                 //contact exists
                 output.contact = response.data[0];
@@ -59,12 +65,12 @@ exports.myRequests = [
                 callback(error, undefined);
               }
             })
-            .catch(function(error) {
+            .catch(function (error) {
               output.contact = undefined;
               callback(error, undefined);
             });
         },
-        requests: function(callback) {
+        requests: function (callback) {
           var requesttype = "5dc0429a93259a00177dacd4";
           switch (req.spaceId.toString()) {
             case "5d26e793375e9b001745e84d":
@@ -93,7 +99,7 @@ exports.myRequests = [
           };
           console.log(config);
           axios(config)
-            .then(function(response) {
+            .then(function (response) {
               if (response.data && response.data.length > 0) {
                 //contact exists
                 output.requests = response.data;
@@ -103,7 +109,7 @@ exports.myRequests = [
                 callback(error, undefined);
               }
             })
-            .catch(function(error) {
+            .catch(function (error) {
               output.requests = undefined;
               callback(error, undefined);
             });
@@ -121,25 +127,24 @@ exports.myRequests = [
 exports.submit = [
   // Validate fields
   body("fields.name", "Name is required")
-    .not()
-    .isEmpty()
-    .withMessage("Name is required"),
+  .not()
+  .isEmpty()
+  .withMessage("Name is required"),
   body("fields.contact", "Contact is invalid"),
   body("fields.contact.phonenumber", "Phone number is invalid")
-    .isMobilePhone("fa-IR")
-    .withMessage("Phone number is invalid"),
+  .isMobilePhone("fa-IR")
+  .withMessage("Phone number is invalid"),
   body("fields.contact.name", "Contact name is invalid")
-    .not()
-    .isEmpty()
-    .withMessage("Contact name is invalid"),
-  body("fields.details", "Request details is invalid"),
+  .not()
+  .isEmpty()
+  .withMessage("Contact name is invalid"),
   //Sanitize fields
   sanitizeBody("fields.contact.phonenumber")
-    .trim()
-    .escape(),
+  .trim()
+  .escape(),
   sanitizeBody("fields.contact.name")
-    .trim()
-    .escape(),
+  .trim()
+  .escape(),
   (req, res, next) => {
     var errors = validationResult(req);
     if (!errors.isEmpty()) {
@@ -151,18 +156,18 @@ exports.submit = [
       });
       return;
     } else {
-      var contacttype = "5dc272d251b8310017540c51";
-      switch (req.spaceId.toString()) {
-        case "5d26e793375e9b001745e84d":
-          contacttype = "5dc272d251b8310017540c51";
-          break;
-        case "5cf3883dcce4de00174d48cf":
-          contacttype = "";
-          break;
-      }
+      var contacttype = "5dcaca39fd1893001716ac09";
+      // switch (req.spaceId.toString()) {
+      //   case "5d26e793375e9b001745e84d":
+      //     contacttype = "5dc272d251b8310017540c51";
+      //     break;
+      //   case "5cf3883dcce4de00174d48cf":
+      //     contacttype = "5dcaca39fd1893001716ac09";
+      //     break;
+      // }
       var output = {};
       var tasks = {
-        contact: function(callback) {
+        contact: function (callback) {
           ///First query to get existing contact
           var apiRoot =
             process.env.CONTENT_DELIVERY_API ||
@@ -183,7 +188,7 @@ exports.submit = [
           };
           console.log(config);
           axios(config)
-            .then(function(response) {
+            .then(function (response) {
               if (response.data && response.data.length > 0) {
                 //contact exists
                 output.contact = response.data[0];
@@ -196,8 +201,11 @@ exports.submit = [
                 data.fields = fields;
                 data["contentType"] = contacttype;
                 broker
-                  .sendRPCMessage(
-                    { body: data, userId: req.userId, spaceId: req.spaceId },
+                  .sendRPCMessage({
+                      body: data,
+                      userId: req.userId,
+                      spaceId: req.spaceId
+                    },
                     "addcontent"
                   )
                   .then(result => {
@@ -215,20 +223,23 @@ exports.submit = [
                   });
               }
             })
-            .catch(function(error) {
+            .catch(function (error) {
               output.contact = undefined;
               callback(error, undefined);
             });
         },
-        details: function(callback) {
+        details: function (callback) {
           var fields = req.body.fields.details;
           var data = {};
           fields.name = req.body.fields.name;
           data.fields = fields;
           data["contentType"] = req.body.contentType;
           broker
-            .sendRPCMessage(
-              { body: data, userId: req.userId, spaceId: req.spaceId },
+            .sendRPCMessage({
+                body: data,
+                userId: req.userId,
+                spaceId: req.spaceId
+              },
               "addcontent"
             )
             .then(result => {
@@ -245,7 +256,7 @@ exports.submit = [
               }
             });
         },
-        request: function(callback) {
+        request: function (callback) {
           var data = {};
           if (output.details && output.contact) {
             var fields = {
@@ -271,8 +282,11 @@ exports.submit = [
             fields.stage = stage;
             data.fields = fields;
             broker
-              .sendRPCMessage(
-                { body: data, userId: req.userId, spaceId: req.spaceId },
+              .sendRPCMessage({
+                  body: data,
+                  userId: req.userId,
+                  spaceId: req.spaceId
+                },
                 "addcontent"
               )
               .then(result => {
@@ -316,12 +330,12 @@ exports.getRequestsOffers = [
     };
     console.log(config);
     axios(config)
-      .then(function(response) {
+      .then(function (response) {
         if (response.data && response.data.data && response.data.data.contents)
           res.send(response.data.data.contents);
         else res.send(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
@@ -362,7 +376,7 @@ exports.getNewapplications = [
     };
     console.log(config);
     axios(config)
-      .then(function(response) {
+      .then(function (response) {
         if (response.data && response.data.length > 0) {
           for (i = 0; i <= response.data.length; i++) {
             if (response.data[i]) {
@@ -377,7 +391,7 @@ exports.getNewapplications = [
         }
         res.send(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
@@ -418,10 +432,10 @@ exports.getOpenedApplications = [
     };
     console.log(config);
     axios(config)
-      .then(function(response) {
+      .then(function (response) {
         res.send(response.data);
       })
-      .catch(function(error) {
+      .catch(function (error) {
         if (error.response) {
           // The request was made and the server responded with a status code
           // that falls out of the range of 2xx
@@ -450,8 +464,11 @@ exports.openApplication = [
   (req, res, next) => {
     req.body.id = req.params.id;
     broker
-      .sendRPCMessage(
-        { spaceId: req.spaceid, userId: req.userId, body: req.body },
+      .sendRPCMessage({
+          spaceId: req.spaceid,
+          userId: req.userId,
+          body: req.body
+        },
         "partialupdatecontent"
       )
       .then(result => {
@@ -471,9 +488,8 @@ exports.openApplication = [
             baseURL: apiRoot,
             method: "get",
             params: {
-              _id: obj.data.fields.request
-                ? obj.data.fields.request
-                : obj.data.fields.requestid
+              _id: obj.data.fields.request ?
+                obj.data.fields.request : obj.data.fields.requestid
             },
             headers: {
               authorization: req.headers.authorization,
@@ -482,12 +498,12 @@ exports.openApplication = [
           };
           console.log(config);
           axios(config)
-            .then(function(response) {
+            .then(function (response) {
               if (response.data && response.data.length > 0)
                 res.send(response.data[0]);
               else res.status(204).send();
             })
-            .catch(function(error) {
+            .catch(function (error) {
               if (error.response) {
                 // The request was made and the server responded with a status code
                 // that falls out of the range of 2xx
@@ -519,8 +535,11 @@ exports.cancelApplication = [
   (req, res, next) => {
     req.body.id = req.params.id;
     broker
-      .sendRPCMessage(
-        { spaceId: req.spaceid, userId: req.userId, body: req.body },
+      .sendRPCMessage({
+          spaceId: req.spaceid,
+          userId: req.userId,
+          body: req.body
+        },
         "partialupdatecontent"
       )
       .then(result => {
@@ -541,8 +560,11 @@ exports.rejectApplication = [
   (req, res, next) => {
     req.body.id = req.params.id;
     broker
-      .sendRPCMessage(
-        { spaceId: req.spaceid, userId: req.userId, body: req.body },
+      .sendRPCMessage({
+          spaceId: req.spaceid,
+          userId: req.userId,
+          body: req.body
+        },
         "partialupdatecontent"
       )
       .then(result => {
