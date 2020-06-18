@@ -47,4 +47,5 @@ router.get("/getall/:contentType/lean", auth.verifyToken, controller.getAllLean)
 router.get("/getall/:contentType", auth.verifyToken, controller.getAll);
 router.get("/get/fullquery", auth.verifyToken, controller.fullquery);
 router.get("/lean/:contentType", auth.verifyToken, controller.getflatcontentsbytype);
+router.post("/search", auth.verifyToken, controller.search);
 module.exports = router;
