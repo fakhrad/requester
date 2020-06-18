@@ -182,6 +182,7 @@ HTTP/1.1 200 OK
  }
  */
 router.get("/info", auth.verifyToken, usercontoller.getinfo);
+router.post("/query", auth.verifyToken, usercontoller.query);
 
 /**
  * @api {put} /user/updateprofile Update Profile

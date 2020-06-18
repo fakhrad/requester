@@ -17,7 +17,7 @@ var mongoose = require("mongoose");
 var connections = require("./connections");
 
 var dev_db_url =
-  "mongodb://fakhrad:logrezaee24359@ds243188-a0.mlab.com:43188,ds243188-a1.mlab.com:43188/content-db?replicaSet=rs-ds243188";
+  "mongodb://fakhrad:logrezaee24359@ds135036.mlab.com:35036/content-db";
 var mongoDB = process.env.DATABASE_URL || dev_db_url;
 
 var auth_db_url =

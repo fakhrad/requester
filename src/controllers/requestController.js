@@ -2,8 +2,11 @@ var axios = require("axios");
 const async = require("async");
 const broker = require("./serviceBroker");
 const partnerreject = require('../events/onPartnerRejectedAnApp')
-exports.myRequests = [
+const helper = require('./helper')
+exports.myRequestsLean = [
   (req, res, next) => {
+    var lang = req.query.lang;
+    delete req.query.lang;
     var q = req.query || {};
     if (q) {
       q["sys.issuer"] = req.userId;
@@ -26,6 +29,84 @@ exports.myRequests = [
     console.log(config);
     axios(config)
       .then(function (response) {
+        var rows = [];
+        for (i = 0; i <= response.data.length - 1; i++) {
+          var content = response.data[i].fields;
+          var r = helper.lean(content, lang);
+          r["_id"] = response.data[i]._id
+          rows.push(r);
+        }
+        res.send(rows);
+      })
+      .catch(function (error) {
+        if (error.response) {
+          // The request was made and the server responded with a status code
+          // that falls out of the range of 2xx
+          console.log(error.response.data);
+          console.log(error.response.status);
+          console.log(error.response.headers);
+          res.status(error.response.status).send(error.response.data);
+        } else if (error.request) {
+          // The request was made but no response was received
+          // `error.request` is an instance of XMLHttpRequest in the browser and an instance of
+          // http.ClientRequest in node.js
+          console.log(error.request);
+          res.status(204).send("No response from server");
+        } else {
+          // Something happened in setting up the request that triggered an Error
+          console.log("Error", error.message);
+          res.status(500).send(error.message);
+        }
+        console.log(error.config);
+        res.status(400).send(error.config);
+      });
+  }
+];
+
+exports.myRequests = [
+  (req, res, next) => {
+    // if (req.query.lean && req.query.lean == "true")
+    //   lean = true;
+    // delete req.query.lean;
+    // if (req.query.lang)
+    //   lang = true;
+    // delete req.query.lang;
+    var q = req.query || {};
+    if (q) {
+      q["sys.issuer"] = req.userId;
+      q["sys.spaceId"] = req.spaceId.toString();
+      q["sort"] = "-sys.lastUpdateTime";
+    }
+    // req.query.lean = lean;
+    // req.query.lang = lang;
+    console.log(q);
+    var apiRoot =
+      process.env.CONTENT_DELIVERY_API || "https://app-dpanel.herokuapp.com";
+    var config = {
+      url: "/contents/query",
+      baseURL: apiRoot,
+      method: "get",
+      params: q,
+      headers: {
+        authorization: req.headers.authorization,
+        clientid: req.spaceId.toString()
+      }
+    };
+    console.log(config);
+    axios(config)
+      .then(function (response) {
+        // if (req.query.lean) {
+        //   var rows = [];
+        //   console.log(req.query.lean)
+        //   for (i = 0; i <= response.data.length - 1; i++) {
+        //     var content = response.data[i].fields;
+        //     var r = helper.lean(content, req.query.lean);
+        //     console.log(JSON.stringify(r))
+        //     r["_id"] = response.data[i]._id
+        //     rows.push(r);
+        //   }
+        //   res.send(rows);
+        // } else
         res.send(response.data);
       })
       .catch(function (error) {

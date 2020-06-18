@@ -5,80 +5,14 @@ const {
 const {
   sanitizeBody
 } = require("express-validator/filter");
-var axios = require("axios");
 var express = require("express");
-var router = express.Router();
-var controller = require("../controllers/requestController");
-var broker = require("../controllers/serviceBroker");
+var broker = require("./serviceBroker");
+const Contents = require("../models/content");
+const ContentTypes = require("../models/contentType");
 
-exports.getcategorieslist = [
-  body("id", "Id must not be empty"),
-  //Sanitize fields
-  sanitizeBody("id")
-  .trim()
-  .escape(),
+exports.getreviewslist = [
   (req, res, next) => {
-    var errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      //There are errors. send error result
-      res.status(400).json({
-        success: false,
-        error: errors
-      });
-      return;
-    } else {}
-  }
-];
 
-exports.getproductslist = [
-  body("id", "Id must not be empty"),
-  //Sanitize fields
-  sanitizeBody("id")
-  .trim()
-  .escape(),
-  (req, res, next) => {
-    var errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      //There are errors. send error result
-      res.status(400).json({
-        success: false,
-        error: errors
-      });
-      return;
-    } else {}
-  }
-];
-
-exports.getpartnerproducts = [
-  (req, res, next) => {
-    var errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      //There are errors. send error result
-      res.status(400).json({
-        success: false,
-        error: errors
-      });
-      return;
-    } else {}
-  }
-];
-
-exports.getproductdetail = [
-  body("id", "Id must not be empty"),
-  //Sanitize fields
-  sanitizeBody("id")
-  .trim()
-  .escape(),
-  (req, res, next) => {
-    var errors = validationResult(req);
-    if (!errors.isEmpty()) {
-      //There are errors. send error result
-      res.status(400).json({
-        success: false,
-        error: errors
-      });
-      return;
-    } else {}
   }
 ];
 
