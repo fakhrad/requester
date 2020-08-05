@@ -183,6 +183,8 @@ HTTP/1.1 200 OK
  */
 router.get("/info", auth.verifyToken, usercontoller.getinfo);
 router.post("/query", auth.verifyToken, usercontoller.query);
+router.post("/mostpopular", auth.verifyToken, usercontoller.mostPopular);
+router.post("/newplaces", auth.verifyToken, usercontoller.newPlaces);
 
 /**
  * @api {put} /user/updateprofile Update Profile

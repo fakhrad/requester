@@ -23,6 +23,9 @@ var request_v2 = require("./routes/requests_v2");
 var partner = require("./routes/partners");
 var products = require("./routes/products");
 var reviews = require("./routes/reviews");
+var contacts = require("./routes/contacts");
+var subsciption = require("./routes/newsletters");
+var config = require("./routes/config");
 
 app.use(logger("dev"));
 app.use(bodyParser.json());
@@ -40,5 +43,8 @@ app.use("/api/v1/auth", auth);
 app.use("/api/v1/products", products);
 app.use("/api/v1/partners", partner);
 app.use("/api/v1/reviews", reviews);
+app.use("/api/v1/contacts", contacts);
+app.use("/api/v1/newsletters", subsciption);
+app.use("/api/v1/config", config);
 app.use("/docs", express.static("./apidoc"));
 module.exports = app;

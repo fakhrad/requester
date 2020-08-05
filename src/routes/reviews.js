@@ -4,8 +4,8 @@ var router = express.Router();
 var controller = require("../controllers/reviewcontroller");
 var auth = require("../controllers/auth");
 
-router.post("/add", auth.verifyToken, controller.add);
-router.put("/update", auth.verifyToken, controller.update);
-router.delete("/remove", auth.verifyToken, controller.remove);
-router.get("/", auth.verifyToken, controller.getreviewslist);
+router.post("/", auth.verifyToken, controller.add);
+router.put("/", auth.verifyToken, controller.update);
+router.delete("/", auth.verifyToken, controller.remove);
+router.get("/:id", auth.verifyToken, controller.getreviewslist);
 module.exports = router;

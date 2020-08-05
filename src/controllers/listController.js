@@ -142,22 +142,22 @@ var lean = function (content, lang) {
           }
           r[keys[j]] = t;
         } else
-        if (typeof (value) == "object") {
-          if (value[lang] != undefined) {
-            if (value[lang].toString().startsWith("http"))
-              r[keys[j]] = value[lang].toString().replace("https://assets.herokuapp.com", "https://assets.reqter.com").replace("https://app-spanel.herokuapp.com", "https://assets.reqter.com");
-            else if (value[lang].toString().startsWith("/assets"))
-              r[keys[j]] = "https://assets.reqter.com" + value[lang].toString();
-            else
-              r[keys[j]] = "https://assets.reqter.com/assets/download/" + value[lang].toString();
-            r[keys[j]] = value[lang];
-            console.log(value[lang]);
-          } else {
-            r[keys[j]] = value;
-          }
-        } else
+          if (typeof (value) == "object") {
+            if (value[lang] != undefined) {
+              if (value[lang].toString().startsWith("http"))
+                r[keys[j]] = value[lang].toString().replace("https://assets.herokuapp.com", "https://assets.reqter.com").replace("https://app-spanel.herokuapp.com", "https://assets.reqter.com");
+              else if (value[lang].toString().startsWith("/assets"))
+                r[keys[j]] = "https://assets.reqter.com" + value[lang].toString();
+              else
+                r[keys[j]] = "https://assets.reqter.com/assets/download/" + value[lang].toString();
+              r[keys[j]] = value[lang];
+              console.log(value[lang]);
+            } else {
+              r[keys[j]] = value;
+            }
+          } else
 
-          r[keys[j]] = value;
+            r[keys[j]] = value;
       } else
         r[keys[j]] = value;
     }
@@ -515,7 +515,7 @@ var findAll = function (req, res, next) {
   var sort = req.query ? req.query.sort || "-sys.issueDate" : "-sys.issueDate";
   var loadrelations = req.query.loadrelations == "false" ? false : true;
   delete req.query.loadrelations;
-  var select = "fields _id";;
+  var select = "fields _id sys.issueDate";;
   if (req.query) {
     delete req.query.skip;
     delete req.query.limit;
@@ -685,11 +685,11 @@ var findAll = function (req, res, next) {
         });
       });
       Contents.find({
-          _id: {
-            $in: ids
-          }
-        })
-        .select("fields _id contentType status")
+        _id: {
+          $in: ids
+        }
+      })
+        .select("fields _id contentType sys.issueDate status")
         .exec((err, rels) => {
           if (err) {
             console.log(err);
@@ -715,8 +715,8 @@ var findAll = function (req, res, next) {
                 } else {
                   var row = rels.filter(
                     a =>
-                    a._id.toString() ===
-                    content.fields[fld.name].toString()
+                      a._id.toString() ===
+                      content.fields[fld.name].toString()
                   );
                   if (row.length > 0) {
                     content.fields[fld.name] = row[0];
@@ -745,6 +745,7 @@ var findAll = function (req, res, next) {
               var content = contents[i].fields;
               var r = helper.lean(content, lang);
               r["_id"] = contents[i]._id
+              r["issuedate"] = contents[i]["sys"]["issueDate"]
               rows.push(r);
             }
             result.data = rows;
